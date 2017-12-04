@@ -36,12 +36,6 @@ pc.extend(pc, function () {
         this.instancesWithToolsUpdate = [];
 
         this.on('beforeremove', this.onBeforeRemove, this);
-        pc.ComponentSystem.on(INITIALIZE, this.onInitialize, this);
-        pc.ComponentSystem.on(POST_INITIALIZE, this.onPostInitialize, this);
-        pc.ComponentSystem.on(UPDATE, this.onUpdate, this);
-        pc.ComponentSystem.on(FIXED_UPDATE, this.onFixedUpdate, this);
-        pc.ComponentSystem.on(POST_UPDATE, this.onPostUpdate, this);
-        pc.ComponentSystem.on(TOOLS_UPDATE, this.onToolsUpdate, this);
     };
     ScriptLegacyComponentSystem = pc.inherits(ScriptLegacyComponentSystem, pc.ComponentSystem);
 
@@ -108,7 +102,7 @@ pc.extend(pc, function () {
             this._destroyScriptComponent(component);
         },
 
-        onInitialize: function (root) {
+        initialize: function (root) {
             this._registerInstances(root);
 
             if (root.enabled) {
@@ -126,7 +120,7 @@ pc.extend(pc, function () {
             }
         },
 
-        onPostInitialize: function (root) {
+        postInitialize: function (root) {
             if (root.enabled) {
                 if (root.script && root.script.enabled) {
                     this._postInitializeScriptComponent(root.script);
@@ -234,19 +228,19 @@ pc.extend(pc, function () {
             }
         },
 
-        onUpdate: function (dt) {
+        update: function (dt) {
             this._updateInstances(UPDATE, this.instancesWithUpdate, dt);
         },
 
-        onFixedUpdate: function (dt) {
+        fixedUpdate: function (dt) {
             this._updateInstances(FIXED_UPDATE, this.instancesWithFixedUpdate, dt);
         },
 
-        onPostUpdate: function (dt) {
+        postUpdate: function (dt) {
             this._updateInstances(POST_UPDATE, this.instancesWithPostUpdate, dt);
         },
 
-        onToolsUpdate: function (dt) {
+        toolsUpdate: function (dt) {
             this._updateInstances(TOOLS_UPDATE, this.instancesWithToolsUpdate, dt);
         },
 

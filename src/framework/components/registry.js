@@ -5,6 +5,7 @@ pc.extend(pc, function () {
      * @description Create a new ComponentSystemRegistry
      */
     var ComponentSystemRegistry = function () {
+        this._list = [];
     };
 
     ComponentSystemRegistry.prototype = {
@@ -20,6 +21,7 @@ pc.extend(pc, function () {
             if(!this[name]) {
                 this[name] = system;
                 system.name = name;
+                this._list.push(system);
             } else {
                 throw new Error(pc.string.format("ComponentSystem name '{0}' already registered or not allowed", name));
             }
@@ -36,56 +38,24 @@ pc.extend(pc, function () {
                 throw new Error(pc.string.format("No ComponentSystem named '{0}' registered", name));
             }
 
+            // remove from list
+            var i = this._list.indexOf(this[name]);
+            this._list.splice(i, 1);
+
+            // remove from map
             delete this[name];
+
         },
 
         /**
          * @private
          * @function
          * @name pc.ComponentSystemRegistry#list
-         * @description Return the contents of the registry as an array, this order of the array
-         * is the order in which the ComponentSystems must be initialized.
+         * @description Return the contents of the registry as an array. This is the order of system initialize and update.
          * @returns {pc.ComponentSystem[]} An array of component systems.
          */
         list: function () {
-            var list = Object.keys(this);
-            var defaultPriority = 1;
-            var priorities = {
-                'collisionrect': 0.5,
-                'collisioncircle': 0.5
-            };
-
-            list.sort(function (a, b) {
-                var pa = priorities[a] || defaultPriority;
-                var pb = priorities[b] || defaultPriority;
-
-                if (pa < pb) {
-                    return -1;
-                } else if (pa > pb) {
-                    return 1;
-                }
-
-                return 0;
-            });
-
-            return list.map(function (key) {
-                return this[key];
-            }, this);
-        },
-
-        getComponentSystemOrder: function () {
-            var index;
-            var names = Object.keys(this);
-
-            index = names.indexOf('collisionrect');
-            names.splice(index, 1);
-            names.unshift('collisionrect');
-
-            index = names.indexOf('collisioncircle');
-            names.splice(index, 1);
-            names.unshift('collisioncircle');
-
-            return names;
+            return this._list;
         }
     };
 

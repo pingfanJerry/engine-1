@@ -37,9 +37,6 @@ pc.extend(pc, function () {
 
         this.initialized = false;
 
-        pc.ComponentSystem.on('initialize', this.onInitialize, this);
-        pc.ComponentSystem.on('update', this.onUpdate, this);
-
         this.on('remove', this.onRemove, this);
     };
     AudioSourceComponentSystem = pc.inherits(AudioSourceComponentSystem, pc.ComponentSystem);
@@ -54,7 +51,7 @@ pc.extend(pc, function () {
             component.paused = !(component.enabled && component.activate);
         },
 
-        onInitialize: function(root) {
+        initialize: function(root) {
             if (root.audiosource &&
                 root.enabled &&
                 root.audiosource.enabled &&
@@ -67,14 +64,14 @@ pc.extend(pc, function () {
             var i, len = children.length;
             for (i = 0; i < len; i++) {
                 if (children[i] instanceof pc.Entity) {
-                    this.onInitialize(children[i]);
+                    this.initialize(children[i]);
                 }
             }
 
             this.initialized = true;
         },
 
-        onUpdate: function(dt) {
+        update: function(dt) {
             var components = this.store;
 
             for (var id in components) {

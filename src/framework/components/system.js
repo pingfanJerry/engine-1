@@ -12,42 +12,6 @@ pc.extend(pc, function () {
         pc.events.attach(this);
     };
 
-    // Class methods
-    pc.extend(ComponentSystem, {
-        initialize: function (root) {
-            ComponentSystem.fire('initialize', root);
-        },
-
-        postInitialize: function (root) {
-            ComponentSystem.fire('postInitialize', root);
-        },
-
-        /**
-         * Update all ComponentSystems
-         */
-        update: function (dt, inTools) {
-            if (inTools) {
-                ComponentSystem.fire('toolsUpdate', dt);
-            } else {
-                ComponentSystem.fire('update', dt);
-            }
-        },
-
-        /**
-         * Update all ComponentSystems
-         */
-        fixedUpdate: function (dt, inTools) {
-            ComponentSystem.fire('fixedUpdate', dt);
-        },
-
-        /**
-         * Update all ComponentSystems
-         */
-        postUpdate: function (dt, inTools) {
-            ComponentSystem.fire('postUpdate', dt);
-        }
-    });
-
     // Instance methods
     ComponentSystem.prototype = {
         /**
@@ -155,18 +119,6 @@ pc.extend(pc, function () {
             }
         }
 
-    };
-
-    // Add event support
-    pc.events.attach(ComponentSystem);
-
-    ComponentSystem.destroy = function () {
-        ComponentSystem.off('initialize');
-        ComponentSystem.off('postInitialize');
-        ComponentSystem.off('toolsUpdate');
-        ComponentSystem.off('update');
-        ComponentSystem.off('fixedUpdate');
-        ComponentSystem.off('postUpdate');
     };
 
     return {

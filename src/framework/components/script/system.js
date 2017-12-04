@@ -23,10 +23,6 @@ pc.extend(pc, function () {
         this._components = [ ];
 
         this.on('beforeremove', this._onBeforeRemove, this);
-        pc.ComponentSystem.on('initialize', this._onInitialize, this);
-        pc.ComponentSystem.on('postInitialize', this._onPostInitialize, this);
-        pc.ComponentSystem.on('update', this._onUpdate, this);
-        pc.ComponentSystem.on('postUpdate', this._onPostUpdate, this);
     };
     ScriptComponentSystem = pc.inherits(ScriptComponentSystem, pc.ComponentSystem);
 
@@ -86,30 +82,42 @@ pc.extend(pc, function () {
             return this.addComponent(clone, data);
         },
 
-        _callComponentMethod: function(name, dt) {
-            for(var i = 0; i < this._components.length; i++) {
-                if (! this._components[i].entity.enabled || ! this._components[i].enabled)
-                    continue;
-
-                this._components[i][name](dt);
-            }
-        },
-
-        _onInitialize: function() {
+        initialize: function() {
             // initialize attributes
             for(var i = 0; i < this._components.length; i++)
                 this._components[i]._onInitializeAttributes();
 
-            this._callComponentMethod('_onInitialize');
+            for(var i = 0; i < this._components.length; i++) {
+                if (! this._components[i].entity.enabled || ! this._components[i].enabled)
+                    continue;
+
+                this._components[i]._onInitialize();
+            }
         },
-        _onPostInitialize: function() {
-            this._callComponentMethod('_onPostInitialize');
+        postInitialize: function() {
+            for(var i = 0; i < this._components.length; i++) {
+                if (! this._components[i].entity.enabled || ! this._components[i].enabled)
+                    continue;
+
+                this._components[i]._onPostInitialize();
+            }
         },
-        _onUpdate: function(dt) {
-            this._callComponentMethod('_onUpdate', dt);
+        update: function(dt) {
+            for(var i = 0; i < this._components.length; i++) {
+                if (! this._components[i].entity.enabled || ! this._components[i].enabled)
+                    continue;
+
+                this._components[i]._onUpdate(dt);
+            }
+
         },
-        _onPostUpdate: function(dt) {
-            this._callComponentMethod('_onPostUpdate', dt);
+        postUpdate: function(dt) {
+            for(var i = 0; i < this._components.length; i++) {
+                if (! this._components[i].entity.enabled || ! this._components[i].enabled)
+                    continue;
+
+                this._components[i]._onPostUpdate(dt);
+            }
         },
 
         _onBeforeRemove: function(entity, component) {

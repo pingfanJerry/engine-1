@@ -21,8 +21,6 @@ pc.extend(pc, function () {
         this.windowResolution = new pc.Vec2();
         this.app.graphicsDevice.on("resizecanvas", this._onResize, this);
 
-        pc.ComponentSystem.on('update', this._onUpdate, this);
-
         this.on('beforeremove', this.onRemoveComponent, this);
     };
     ScreenComponentSystem = pc.inherits(ScreenComponentSystem, pc.ComponentSystem);
@@ -54,7 +52,7 @@ pc.extend(pc, function () {
             ScreenComponentSystem._super.initializeComponentData.call(this, component, data, properties);
         },
 
-        _onUpdate: function (dt) {
+        update: function (dt) {
             var components = this.store;
 
             for (var id in components) {

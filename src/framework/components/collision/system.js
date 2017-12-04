@@ -31,8 +31,6 @@ pc.extend(pc, function () {
         this.implementations = { };
 
         this.on('remove', this.onRemove, this);
-
-        pc.ComponentSystem.on('update', this.onUpdate, this);
     };
 
     CollisionComponentSystem = pc.inherits(CollisionComponentSystem, pc.ComponentSystem);
@@ -45,7 +43,7 @@ pc.extend(pc, function () {
                 //
             } else {
                 // Unbind the update function if we haven't loaded Ammo by now
-                pc.ComponentSystem.off('update', this.onUpdate, this);
+                this.update = null;
             }
         },
 
@@ -140,7 +138,7 @@ pc.extend(pc, function () {
             this.implementations[data.type].remove(entity, data);
         },
 
-        onUpdate: function (dt) {
+        update: function (dt) {
             var id, entity, data;
             var components = this.store;
 

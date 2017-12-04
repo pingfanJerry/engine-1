@@ -227,8 +227,6 @@ pc.extend(pc, function () {
         var particlesystemsys = new pc.ParticleSystemComponentSystem(this);
         var screensys = new pc.ScreenComponentSystem(this);
         var elementsys = new pc.ElementComponentSystem(this);
-        // var textsys = new pc.TextComponentSystem(this);
-        // var imagesys = new pc.ImageComponentSystem(this);
         var zonesys = new pc.ZoneComponentSystem(this);
 
         this._visibilityChangeHandler = this.onVisibilityChange.bind(this);
@@ -437,8 +435,8 @@ pc.extend(pc, function () {
                     self.root.addChild(entity);
 
                     // initialize components
-                    pc.ComponentSystem.initialize(entity);
-                    pc.ComponentSystem.postInitialize(entity);
+                    this._initializeComponents(entity);
+                    this._postInitializeComponents(entity);
 
                     if (callback) callback(err, entity);
                 };
@@ -741,10 +739,10 @@ pc.extend(pc, function () {
                 this.onLibrariesLoaded();
             }
 
-            pc.ComponentSystem.initialize(this.root);
+            this._initializeComponents(this.root);
             this.fire("initialize");
 
-            pc.ComponentSystem.postInitialize(this.root);
+            this._postInitializeComponents(this.root);
             this.fire("postinitialize");
 
             this.tick();
@@ -769,8 +767,18 @@ pc.extend(pc, function () {
             if (pc.script.legacy)
                 pc.ComponentSystem.fixedUpdate(1.0 / 60.0, this._inTools);
 
-            pc.ComponentSystem.update(dt, this._inTools);
-            pc.ComponentSystem.postUpdate(dt, this._inTools);
+            var systems = this.systems.list();
+            var len = systems.length;
+            for (var i = 0; i < len; i++) {
+                if (systems[i].update) {
+                    systems[i].update(dt);
+                }
+            }
+            for (var i = 0; i < len; i++) {
+                if (systems[i].postUpdate) {
+                    systems[i].postUpdate(dt);
+                }
+            }
 
             // fire update event
             this.fire("update", dt);
@@ -1236,6 +1244,26 @@ pc.extend(pc, function () {
             this.batcher.generate();
         },
 
+        _initializeComponents: function (root) {
+            var systems = this.systems.list();
+            var len = systems.length;
+            for (var i = 0; i < len; i++) {
+                if (systems[i].initialize) {
+                    systems[i].initialize(root);
+                }
+            }
+        },
+
+        _postInitializeComponents: function (root) {
+            var systems = this.systems.list();
+            var len = systems.length;
+            for (var i = 0; i < len; i++) {
+                if (systems[i].postInitialize) {
+                    systems[i].postInitialize(root);
+                }
+            }
+        },
+
         /**
         * @function
         * @name pc.Application#destroy
@@ -1283,7 +1311,7 @@ pc.extend(pc, function () {
                 this.controller = null;
             }
 
-            pc.ComponentSystem.destroy();
+            // pc.ComponentSystem.destroy();
 
             // destroy all texture resources
             var assets = this.assets.list();

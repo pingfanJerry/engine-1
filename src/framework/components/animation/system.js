@@ -36,9 +36,6 @@ pc.extend(pc, function () {
         this.schema = _schema;
 
         this.on('beforeremove', this.onBeforeRemove, this);
-        this.on('update', this.onUpdate, this);
-
-        pc.ComponentSystem.on('update', this.onUpdate, this);
     };
     AnimationComponentSystem = pc.inherits(AnimationComponentSystem, pc.ComponentSystem);
 
@@ -83,7 +80,7 @@ pc.extend(pc, function () {
             component.onBeforeRemove();
         },
 
-        onUpdate: function (dt) {
+        update: function (dt) {
             var components = this.store;
 
             for (var id in components) {

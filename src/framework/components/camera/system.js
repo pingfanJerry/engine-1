@@ -50,8 +50,6 @@ pc.extend(pc, function () {
 
         this.on('beforeremove', this.onBeforeRemove, this);
         this.on('remove', this.onRemove, this);
-
-        pc.ComponentSystem.on('update', this.onUpdate, this);
     };
     CameraComponentSystem = pc.inherits(CameraComponentSystem, pc.ComponentSystem);
 
@@ -142,7 +140,7 @@ pc.extend(pc, function () {
             data.camera = null;
         },
 
-        onUpdate: function (dt) {
+        update: function (dt) {
             var components = this.store;
             var component, componentData, cam, vrDisplay;
 

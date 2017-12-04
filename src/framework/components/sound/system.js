@@ -35,7 +35,7 @@ pc.extend(pc, function () {
 
         this.manager = manager;
 
-        pc.ComponentSystem.on('update', this.onUpdate, this);
+        // pc.ComponentSystem.on('update', this.onUpdate, this);
 
         this.on('beforeremove', this.onBeforeRemove, this);
     };
@@ -91,7 +91,7 @@ pc.extend(pc, function () {
             return this.addComponent(clone, newData);
         },
 
-        onUpdate: function(dt) {
+        update: function(dt) {
             var store = this.store;
 
             for (var id in store) {

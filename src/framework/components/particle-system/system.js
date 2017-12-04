@@ -86,7 +86,6 @@ pc.extend(pc, function() {
         };
 
         this.on('beforeremove', this.onRemove, this);
-        pc.ComponentSystem.on('update', this.onUpdate, this);
     };
     ParticleSystemComponentSystem = pc.inherits(ParticleSystemComponentSystem, pc.ComponentSystem);
 
@@ -155,7 +154,7 @@ pc.extend(pc, function() {
             return this.addComponent(clone, data);
         },
 
-        onUpdate: function(dt) {
+        update: function(dt) {
             var components = this.store;
             var currentCamera;
             var numSteps, i;

@@ -19,8 +19,6 @@ pc.extend(pc, function () {
 
         this.manager = manager;
         this.current = null;
-
-        pc.ComponentSystem.on('update', this.onUpdate, this);
     };
     AudioListenerComponentSystem = pc.inherits(AudioListenerComponentSystem, pc.ComponentSystem);
 
@@ -33,7 +31,7 @@ pc.extend(pc, function () {
             AudioListenerComponentSystem._super.initializeComponentData.call(this, component, data, properties);
         },
 
-        onUpdate: function (dt) {
+        update: function (dt) {
             if (this.current) {
                 var position = this.current.getPosition();
                 this.manager.listener.setPosition(position);
