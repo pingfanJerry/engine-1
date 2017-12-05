@@ -1,20 +1,20 @@
 pc.extend(pc, function () {
-    var _schema = [
-        'enabled',
-        'type',
-        'asset',
-        'materialAsset',
-        'castShadows',
-        'receiveShadows',
-        'castShadowsLightmap',
-        'lightmapped',
-        'lightmapSizeMultiplier',
-        'isStatic',
-        'material',
-        'model',
-        'mapping',
-        'batchGroupId'
-    ];
+    // var _schema = [
+    //     'enabled',
+    //     'type',
+    //     'asset',
+    //     'materialAsset',
+    //     'castShadows',
+    //     'receiveShadows',
+    //     'castShadowsLightmap',
+    //     'lightmapped',
+    //     'lightmapSizeMultiplier',
+    //     'isStatic',
+    //     'material',
+    //     'model',
+    //     'mapping',
+    //     'batchGroupId'
+    // ];
 
     /**
      * @name pc.ModelComponentSystem
@@ -25,14 +25,18 @@ pc.extend(pc, function () {
      * @extends pc.ComponentSystem
      */
     var ModelComponentSystem = function ModelComponentSystem (app) {
+        // base constructor
+        pc.ComponentSystem.call(this, app);
+
         this.id = 'model';
-        this.description = "Renders a 3D model at the location of the Entity.";
-        app.systems.add(this.id, this);
+        this.type = 'model';
+        // this.description = "Renders a 3D model at the location of the Entity.";
+        app.systems.add(this.type, this);
 
         this.ComponentType = pc.ModelComponent;
-        this.DataType = pc.ModelComponentData;
+        // this.DataType = pc.ModelComponentData;
 
-        this.schema = _schema;
+        // this.schema = _schema;
 
         var gd = app.graphicsDevice;
         this.box = pc.createBox(gd, {
@@ -64,9 +68,11 @@ pc.extend(pc, function () {
 
         this.on('beforeremove', this.onRemove, this);
     };
-    ModelComponentSystem = pc.inherits(ModelComponentSystem, pc.ComponentSystem);
+    // ModelComponentSystem = pc.inherits(ModelComponentSystem, pc.ComponentSystem);
 
-    pc.Component._buildAccessors(pc.ModelComponent.prototype, _schema);
+    ModelComponentSystem.prototype = Object.create(pc.ComponentSystem.prototype);
+
+    // pc.Component._buildAccessors(pc.ModelComponent.prototype, _schema);
 
     pc.extend(ModelComponentSystem.prototype, {
         initializeComponentData: function (component, data, properties) {

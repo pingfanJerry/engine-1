@@ -11,6 +11,7 @@ pc.extend(pc, function () {
     var Component = function (system, entity) {
         this.system = system;
         this.entity = entity;
+        this._enabled = true;
 
         pc.events.attach(this);
 
@@ -23,6 +24,19 @@ pc.extend(pc, function () {
         });
 
         this.on('set_enabled', this.onSetEnabled, this);
+
+        if (!this.system.DataType && !Component.prototype.hasOwnProperty("enabled")) {
+            Object.defineProperty(Component.prototype, "enabled", {
+                get: function () {
+                    return this._enabled;
+                },
+                set: function (value) {
+                    var prev = this._enabled;
+                    this._enabled = value;
+                    this.onSetEnabled("enabled", prev, this._enabled);
+                }
+            });
+        }
     };
 
     Component._buildAccessors = function (obj, schema) {
@@ -84,7 +98,15 @@ pc.extend(pc, function () {
 
         onDisable: function () { },
 
-        onPostStateChange: function() { }
+        onPostStateChange: function() { },
+
+        // initialize all named properties from values in data[name] or from default in '_name' field
+        _initializeProperties: function (names, data) {
+            for (var i = 0; i < names.length; i++) {
+                var name = names[i];
+                this[name] = data[name] ? data[name] : self['_'+name];
+            }
+        }
     };
 
     return {

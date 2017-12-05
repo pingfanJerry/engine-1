@@ -111,7 +111,6 @@
 ../src/framework/components/animation/data.js
 ../src/framework/components/model/component.js
 ../src/framework/components/model/system.js
-../src/framework/components/model/data.js
 ../src/framework/components/camera/component.js
 ../src/framework/components/camera/system.js
 ../src/framework/components/camera/data.js

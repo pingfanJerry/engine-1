@@ -40,19 +40,32 @@ pc.extend(pc, function () {
          */
         addComponent: function (entity, data) {
             var component = new this.ComponentType(this, entity);
-            var componentData = new this.DataType();
-
             data = data || {};
 
-            this.dataStore[entity._guid] = {
-                entity: entity,
-                data: componentData
-            };
+            if (this.DataType) {
+                var componentData = new this.DataType();
+
+
+                this.dataStore[entity._guid] = {
+                    entity: entity,
+                    data: componentData
+                };
+            }
+
 
             entity[this.id] = component;
             entity.c[this.id] = component;
 
-            this.initializeComponentData(component, data, []);
+            if (component.setup) {
+                component.setup(data);
+
+                // after component is initialized call onEnable
+                if (component.enabled && component.entity.enabled) {
+                    component.onEnable();
+                }
+            } else {
+                this.initializeComponentData(component, data);
+            }
 
             this.fire('add', entity, component);
 
