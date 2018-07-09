@@ -36,6 +36,7 @@ Object.assign(pc, function () {
 
         this._meshInfo = [];
         this._material = null;
+        this._userMaterial = null;
 
         this._noResize = false; // flag used to disable resizing events
 
@@ -196,6 +197,7 @@ Object.assign(pc, function () {
                     var mesh = pc.createMesh(this._system.app.graphicsDevice, meshInfo.positions, { uvs: meshInfo.uvs, normals: meshInfo.normals, indices: meshInfo.indices });
 
                     var mi = new pc.MeshInstance(this._node, mesh, this._material);
+                    mi.name = "Text Element: " + this._entity.name;
                     mi.castShadow = false;
                     mi.receiveShadow = false;
 
@@ -266,14 +268,16 @@ Object.assign(pc, function () {
         },
 
         _updateMaterial: function (screenSpace) {
-            var cull;
+            var cull = !screenSpace;
 
-            if (screenSpace) {
-                this._material = this._system.defaultScreenSpaceTextMaterial;
-                cull = false;
+            if (this._userMaterial) {
+                this._material = this._userMaterial;
             } else {
-                this._material = this._system.defaultTextMaterial;
-                cull = true;
+                if (screenSpace) {
+                    this._material = this._system.defaultScreenSpaceTextMaterial;
+                } else {
+                    this._material = this._system.defaultTextMaterial;
+                }
             }
 
             if (this._model) {
@@ -912,6 +916,19 @@ Object.assign(pc, function () {
             if (value && Math.abs(this._element.anchor.y - this._element.anchor.w) < 0.0001) {
                 this._element.height = this.height;
             }
+        }
+    });
+
+    Object.defineProperty(TextElement.prototype, "material", {
+        get: function () {
+            return this._material;
+        },
+
+        set: function (value) {
+            this._userMaterial = value;
+
+            var screenSpace = (this._element.screen && this._element.screen.screen.screenSpace);
+            this._updateMaterial(screenSpace);
         }
     });
 

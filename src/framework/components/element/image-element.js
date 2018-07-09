@@ -84,6 +84,11 @@ Object.assign(pc, function () {
         if (this.unmaskMeshInstance) {
             this.unmaskMeshInstance.material = material;
         }
+        // remove model then re-add to update to current mesh instances
+        // if (this._entity.enabled && this._element.enabled) {
+        //     this._element.removeModelFromLayers(this.model);
+        //     this._element.addModelToLayers(this.model);
+        // }
     };
 
     ImageRenderable.prototype.setParameter = function (name, value) {
@@ -159,7 +164,6 @@ Object.assign(pc, function () {
             this.unmaskMeshInstance.cull = cull;
         }
     };
-
 
     ImageRenderable.prototype.setScreenSpace = function (screenSpace) {
         this.meshInstance.screenSpace = screenSpace;
@@ -837,9 +841,13 @@ Object.assign(pc, function () {
         },
         set: function (value) {
             if (!value) {
+                // revert to default material
                 var screenSpace = this._element.screen ? this._element.screen.screen.screenSpace : false;
                 value = screenSpace ? this._system.defaultScreenSpaceImageMaterial : this._system.defaultImageMaterial;
-                value = this._mask ? this._system.defaultScreenSpaceImageMaskMaterial : this._system.defaultImageMaskMaterial;
+                if (this._mask) {
+                    value = screenSpace ? this._system.defaultScreenSpaceImageMaskMaterial : this._system.defaultImageMaskMaterial;
+                }
+
             }
 
             this._material = value;
